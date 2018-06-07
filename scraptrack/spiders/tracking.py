@@ -8,7 +8,11 @@ from scraptrack import settings
 from sqlalchemy.orm import mapper, sessionmaker
 from scraptrack.items import TrackItem
 from helpers import load_tables, remove_html_markup
-
+#################### Spider Description ####################
+#grabs 5 leavers sorted by the last time they were scraped
+#uses their linkedin profile link as a google search term
+#scrapes relevant details
+############################################################
 class QuotesSpider(scrapy.Spider):
     name = "tracking"
     sesh, Suspect, Leaver = load_tables()
@@ -29,8 +33,6 @@ class QuotesSpider(scrapy.Spider):
         deet = response.xpath('//*[@id="ires"]/ol/div[@class="g"]/div/div[2]/text()').extract()
         deets = deet[0].replace(u'\xa0-\xa0', u'-')
         deet_lst = deets.split('-')
-        #print('DEET  LIST VALUE: ', deet_lst[1])
-        #print('!!!!!!!!!!', len(deet_lst))
         if len(deet_lst) == 3:
             try:
                 item['location'] = deet_lst[0]
@@ -48,6 +50,5 @@ class QuotesSpider(scrapy.Spider):
             item['location'] = None
             item['role'] = None
             item['firm'] = None
-#response.xpath('//*[@id="ires"]/ol/div[@class="g"]/h3/a/text()').extract
 
         yield item
