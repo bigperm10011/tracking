@@ -1,3 +1,3 @@
-cd ~/scraptrack
-source tvirt/bin/activate
-scrapy crawl tracking
+# cd ~/scraptrack
+# source tvirt/bin/activate
+# scrapy crawl tracking
