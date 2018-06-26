@@ -4,7 +4,7 @@ import sqlalchemy
 from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import mapper, sessionmaker
-from email.email import send_mail
+from email import send_mail
 from helpers import load_tables
 
 class TrackPipeline(object):
