@@ -32,8 +32,12 @@ class TrackPipeline(object):
         today = datetime.date.today()
         html = """\
             <!DOCTYPE html><html lang="en"><head>SAR Tracker Update </head><body><table border='1'>
-            <thead><tr><th>Name</th><th>Firm</th><th>Role</th><th>Location</th><th>Location</th></tr></thead>"""
+            <thead><tr><th>Name</th><th>Firm</th><th>Role</th><th>Location</th><th>Link</th></tr></thead>"""
+        changes = []
         for l in lvrs:
+            if l.lrole != l.track_role or l.lfirm != l.track_firm:
+                changes.append(l)
+
             timestamp = l.track_lst_update
             date = timestamp.date()
             if date == today:
@@ -57,4 +61,39 @@ class TrackPipeline(object):
                     html = html + '<td><a target="_blank" href=None">None</a></td></tr>'
         html = html + "</table></body></html>"
         resp_code = send_mail(html)
+        print(resp_code)
+        if len(changes) > 0:
+            html2 = """\
+                <!DOCTYPE html><html lang="en"><head>SAR Leaver Found! </head><body><table border='1'>
+                <thead><tr><th>Name</th><th>Old Firm</th><th>New Firm</th><th>Old Role</th><th>New Role</th><th>Location</th><th>LinkedIn</th></tr></thead>"""
+            for c in changes:
+                html2 = html2 + "<tr>"
+                html2 = html2 + "<td>" + c.name + "</td>"
+                try:
+                    html2 = html2 + "<td>" + c.lfirm + "</td>"
+                except:
+                    html2 = html2 + "<td>None</td>"
+                try:
+                    html2 = html2 + "<td>" + c.track_firm + "</td>"
+                except:
+                    html2 = html2 + "<td>None</td>"
+                try:
+                    html2 = html2 + "<td>" + c.lrole + "</td>"
+                except:
+                    html2 = html2 + "<td>None</td>"
+                try:
+                    html2 = html2 + "<td>" + c.track_role + "</td>"
+                except:
+                    html2 = html2 + "<td>None</td>"
+                try:
+                    html2 = html2 + "<td>" + c.llocation + "</td>"
+                except:
+                    html2 = html2 + "<td>None</td>"
+                try:
+                    html2 = html2 + '<td><a target="_blank" href="'+ c.llink + ' ">LinkedIn</a></td></tr>'
+                except:
+                    html2 = html2 + '<td><a target="_blank" href=None">None</a></td></tr>'
+
+        html2 = html2 + "</table></body></html>"
+        resp_code = send_mail(html2)
         print(resp_code)
