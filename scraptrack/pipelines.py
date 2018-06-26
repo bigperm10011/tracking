@@ -1,5 +1,6 @@
 from scraptrack import settings
-from datetime import datetime, timezone, date
+#from datetime import datetime, timezone, date
+import datetime
 import sqlalchemy
 from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy import create_engine, MetaData, Table
