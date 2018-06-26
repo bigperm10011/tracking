@@ -33,7 +33,7 @@ class TrackPipeline(object):
         html = """\
             <!DOCTYPE html><html lang="en"><head>SAR Tracker Update </head><body><table border='1'>
             <thead><tr><th>Name</th><th>Firm</th><th>Role</th><th>Location</th><th>Location</th></tr></thead>"""
-        for l in leavers:
+        for l in lvrs:
             timestamp = l.track_lst_update
             date = timestamp.date()
             if date == today:
