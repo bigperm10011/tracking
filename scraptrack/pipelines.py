@@ -12,7 +12,7 @@ class TrackPipeline(object):
     def process_item(self, item, spider):
         sesh = spider.sesh
         lvr = sesh.query(spider.Leaver).filter_by(id=item['ident']).one()
-        ts_format = datetime.now(timezone.utc).isoformat()
+        ts_format = datetime.datetime.now(timezone.utc).isoformat()
         lvr.track_lst_update = ts_format
 
         lvr.track_firm = item['firm']
@@ -58,5 +58,3 @@ class TrackPipeline(object):
         html = html + "</table></body></html>"
         resp_code = send_mail(html)
         print(resp_code)
-
-        
