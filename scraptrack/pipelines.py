@@ -1,5 +1,5 @@
 from scraptrack import settings
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 import sqlalchemy
 from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy import create_engine, MetaData, Table
@@ -28,7 +28,7 @@ class TrackPipeline(object):
     def close_spider(self, spider):
         sesh = spider.sesh
         lvrs = sesh.query(spider.Leaver).filter_by(track_detail='Yes').all()
-        today = datetime.date.today()
+        today = date.today()
         html = """\
             <!DOCTYPE html><html lang="en"><head>SAR Tracker Update </head><body><table border='1'>
             <thead><tr><th>Name</th><th>Firm</th><th>Role</th><th>Location</th><th>Location</th></tr></thead>"""
