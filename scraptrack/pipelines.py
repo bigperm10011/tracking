@@ -59,4 +59,4 @@ class TrackPipeline(object):
         resp_code = send_mail(html)
         print(resp_code)
 
-        self.client.close()
+        
