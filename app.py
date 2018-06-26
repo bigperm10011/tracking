@@ -1,7 +1,7 @@
 
 from datetime import date
 from scrapy.crawler import CrawlerProcess
-from suspect_scrape_app.spiders import tracking
+from scraptrack.spiders import tracking
 from scrapy.utils.project import get_project_settings
 #from top_post_emailer import email_last_scraped_date
 
@@ -10,7 +10,7 @@ if __name__ == '__main__':
     #logger = logging.getLogger(__name__)
 
     # only run on saturdays (once a week)
-    if date.strftime(date.today(), '%A').lower() != 'saturday':
+    if date.strftime(date.today(), '%A').lower() != 'None':
 
         settings = get_project_settings()
         crawler = CrawlerProcess(settings)
