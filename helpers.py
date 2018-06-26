@@ -4,6 +4,21 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import mapper, sessionmaker
 from sqlalchemy.ext.automap import automap_base
+import sendgrid
+import os
+from sendgrid.helpers.mail import *
+
+
+
+def send_mail(body):
+    sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
+    from_email = Email("jdbuhrman@gmail.com")
+    subject = "Updated Tracking infromation from SAR"
+    to_email = Email("jbuhrman2@bloomberg.net")
+    content = Content("text/html", body)
+    mail = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
+    return response.status_code
 
 
 def load_tables():
