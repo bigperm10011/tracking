@@ -27,7 +27,7 @@ class TrackPipeline(object):
 
     def close_spider(self, spider):
         sesh = spider.sesh
-        lvrs = sesh.query(spider.Leaver).filter_by(track_detail == 'Yes').all()
+        lvrs = sesh.query(spider.Leaver).filter_by(track_detail='Yes').all()
         today = datetime.date.today()
         html = """\
             <!DOCTYPE html><html lang="en"><head>SAR Tracker Update </head><body><table border='1'>
