@@ -4,7 +4,7 @@ import sqlalchemy
 from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import mapper, sessionmaker
-
+from email.email import send_mail
 from helpers import load_tables
 
 class TrackPipeline(object):
@@ -24,3 +24,26 @@ class TrackPipeline(object):
                 print('except....', item['name'])
 
         return item
+
+    def close_spider(self, spider):
+        sesh = spider.sesh
+        lvrs = sesh.query(spider.Leaver).filter_by(track_detail == 'Yes').all()
+        today = datetime.date.today()
+        html = """\
+            <!DOCTYPE html><html lang="en"><head>SAR Tracker Update </head><body><table border='1'>
+            <thead><tr><th>Name</th><th>Firm</th><th>Role</th><th>Location</th><th>Location</th></tr></thead>"""
+        for l in leavers:
+            timestamp = l.track_lst_update
+            date = timestamp.date()
+            if date == today:
+                html = html + "<tr>"
+                html = html + "<td>" + l.name + "</td>"
+                html = html + "<td>" + l.track_firm + "</td>"
+                html = html + "<td>" + l.track_role + "</td>"
+                html = html + "<td>" + l.track_location + "</td>"
+                html = html + '<td><a target="_blank" href="'+ l.llink + ' ">LinkedIn</a></td></tr>'
+        html = html + "</table></body></html>"
+        resp_code = send_mail(html)
+        print(resp_code)
+
+        self.client.close()
