@@ -39,10 +39,22 @@ class TrackPipeline(object):
             if date == today:
                 html = html + "<tr>"
                 html = html + "<td>" + l.name + "</td>"
-                html = html + "<td>" + l.track_firm + "</td>"
-                html = html + "<td>" + l.track_role + "</td>"
-                html = html + "<td>" + l.track_location + "</td>"
-                html = html + '<td><a target="_blank" href="'+ l.llink + ' ">LinkedIn</a></td></tr>'
+                try:
+                    html = html + "<td>" + l.track_firm + "</td>"
+                except:
+                    html = html + "<td>None</td>"
+                try:
+                    html = html + "<td>" + l.track_role + "</td>"
+                except:
+                    html = html + "<td>None</td>"
+                try:
+                    html = html + "<td>" + l.track_location + "</td>"
+                except:
+                    html = html + "<td>None</td>"
+                try:
+                    html = html + '<td><a target="_blank" href="'+ l.llink + ' ">LinkedIn</a></td></tr>'
+                except:
+                    html = html + '<td><a target="_blank" href=None">None</a></td></tr>'
         html = html + "</table></body></html>"
         resp_code = send_mail(html)
         print(resp_code)
