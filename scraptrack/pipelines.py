@@ -6,7 +6,7 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import mapper, sessionmaker
 
-from helpers import load_tables, send_mail
+from helpers import send_mail, load_tables, gen_html, htmldos
 
 class TrackPipeline(object):
     def process_item(self, item, spider):
@@ -30,70 +30,21 @@ class TrackPipeline(object):
         sesh = spider.sesh
         lvrs = sesh.query(spider.Leaver).filter_by(track_detail='Yes').all()
         today = datetime.date.today()
-        html = """\
-            <!DOCTYPE html><html lang="en"><head>SAR Tracker Update </head><body><table border='1'>
-            <thead><tr><th>Name</th><th>Firm</th><th>Role</th><th>Location</th><th>Link</th></tr></thead>"""
-        changes = []
+        timestamp = l.track_lst_update
+        date = timestamp.date()
+        checked = []
+        changed = []
         for l in lvrs:
-            if l.lrole != l.track_role or l.lfirm != l.track_firm:
-                changes.append(l)
-
-            timestamp = l.track_lst_update
-            date = timestamp.date()
             if date == today:
-                html = html + "<tr>"
-                html = html + "<td>" + l.name + "</td>"
-                try:
-                    html = html + "<td>" + l.track_firm + "</td>"
-                except:
-                    html = html + "<td>None</td>"
-                try:
-                    html = html + "<td>" + l.track_role + "</td>"
-                except:
-                    html = html + "<td>None</td>"
-                try:
-                    html = html + "<td>" + l.track_location + "</td>"
-                except:
-                    html = html + "<td>None</td>"
-                try:
-                    html = html + '<td><a target="_blank" href="'+ l.llink + ' ">LinkedIn</a></td></tr>'
-                except:
-                    html = html + '<td><a target="_blank" href=None">None</a></td></tr>'
-        html = html + "</table></body></html>"
-        resp_code = send_mail(html)
-        print(resp_code)
-        if len(changes) > 0:
-            html2 = """\
-                <!DOCTYPE html><html lang="en"><head>SAR Leaver Found! </head><body><table border='1'>
-                <thead><tr><th>Name</th><th>Old Firm</th><th>New Firm</th><th>Old Role</th><th>New Role</th><th>Location</th><th>LinkedIn</th></tr></thead>"""
-            for c in changes:
-                html2 = html2 + "<tr>"
-                html2 = html2 + "<td>" + c.name + "</td>"
-                try:
-                    html2 = html2 + "<td>" + c.lfirm + "</td>"
-                except:
-                    html2 = html2 + "<td>None</td>"
-                try:
-                    html2 = html2 + "<td>" + c.track_firm + "</td>"
-                except:
-                    html2 = html2 + "<td>None</td>"
-                try:
-                    html2 = html2 + "<td>" + c.lrole + "</td>"
-                except:
-                    html2 = html2 + "<td>None</td>"
-                try:
-                    html2 = html2 + "<td>" + c.track_role + "</td>"
-                except:
-                    html2 = html2 + "<td>None</td>"
-                try:
-                    html2 = html2 + "<td>" + c.llocation + "</td>"
-                except:
-                    html2 = html2 + "<td>None</td>"
-                try:
-                    html2 = html2 + '<td><a target="_blank" href="'+ c.llink + ' ">LinkedIn</a></td></tr>'
-                except:
-                    html2 = html2 + '<td><a target="_blank" href=None">None</a></td></tr>'
+                checked.append(l)
+            if l.lrole != l.track_role or l.lfirm != l.track_firm:
+                changed.append(l)
 
-        html2 = html2 + "</table></body></html>"
-        resp_code = send_mail(html2)
-        print(resp_code)
+        if len(changed) > 0:
+            html2 = htmldos(changed)
+            resp_code2 = send_mail(html2)
+            print(resp_code2)
+        if len(checked) > 0:
+            html = gen_html(checked)
+            resp_code = send_mail(html)
+            print(resp_code)
