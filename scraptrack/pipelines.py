@@ -30,11 +30,11 @@ class TrackPipeline(object):
         sesh = spider.sesh
         lvrs = sesh.query(spider.Leaver).filter_by(track_detail='Yes').all()
         today = datetime.date.today()
-        timestamp = l.track_lst_update
-        date = timestamp.date()
         checked = []
         changed = []
         for l in lvrs:
+            timestamp = l.track_lst_update
+            date = timestamp.date()
             if date == today:
                 checked.append(l)
             if l.lrole != l.track_role or l.lfirm != l.track_firm:
