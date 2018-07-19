@@ -10,21 +10,31 @@ from helpers import send_mail, load_tables, gen_html, htmldos
 
 class TrackPipeline(object):
     def process_item(self, item, spider):
+        print('***** Pipeline Processing Started ******')
         sesh = spider.sesh
         lvr = sesh.query(spider.Leaver).filter_by(id=item['ident']).one()
-        ts_format = datetime.datetime.now(datetime.timezone.utc).isoformat()
-        lvr.track_lst_update = ts_format
-
-        lvr.track_firm = item['firm']
-        lvr.track_location = item['location']
-        lvr.track_role = item['role']
-        lvr.track_detail = 'Yes'
-        try:
-            sesh.commit()
-        except IntegrityError:
+        print('Matching Links....')
+        print('Link on File: ', lvr.llink)
+        print('Link Found: ', item['link'])
+        if lvr.llink == item['link']:
+            ts_format = datetime.datetime.now(datetime.timezone.utc).isoformat()
+            lvr.track_lst_update = ts_format
+            lvr.track_firm = item['firm']
+            lvr.track_location = item['location']
+            lvr.track_role = item['role']
+            lvr.track_detail = 'Yes'
+            try:
+                sesh.commit()
+                print('Result Saved. DB Updated')
+                print('.')
+                print('.')
+                print('.')
+                print('.')
+                print('.')
+            except IntegrityError:
                 print('except....', item['name'])
-
-        return item
+            print('***** Pipeline Processing Complete ******')
+            return item
 
     def close_spider(self, spider):
         sesh = spider.sesh
