@@ -6,7 +6,7 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import mapper, sessionmaker
 
-from helpers import send_mail, load_tables, gen_html, htmldos
+from helpers import send_mail, load_tables, gen_html, htmldos, score_name
 
 class TrackPipeline(object):
     def process_item(self, item, spider):
@@ -47,7 +47,10 @@ class TrackPipeline(object):
             date = timestamp.date()
             if date == today:
                 checked.append(l)
-            if l.lrole != l.track_role or l.lfirm != l.track_firm:
+            print('>>Scoring Firm/Role Match Using Name Match Function')
+            role_ratio = score_name(l.lrole, l.track_role)
+            firm_ratio = score_name(l.lfirm, l.track_firm)
+            if role_ratio < 40 or firm_raio < 40:
                 changed.append(l)
 
         if len(changed) > 0:
