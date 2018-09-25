@@ -91,12 +91,11 @@ class QuotesSpider(scrapy.Spider):
                     else:
                         item['role'] = role1
                     if firm1 == None:
-                        salvage_len = len(cleaned_str.strip())
-                        print('length of salvaged text: ', salvage_len)
-                        if salvage_len < 100:
-                            item['firm'] = salvage_len
+                        if len(cleaned_str) > 100:
+                            print(">>Cleaned string too long for db. Reducing to: ", cleaned_str[:99])
+                            item['firm'] = cleaned_str[:99]
                         else:
-                            item['firm'] = None
+                            item['firm'] = cleaned_str
                     else:
                         item['firm'] = firm1
                     score = score_name(item['name'], db_name)
